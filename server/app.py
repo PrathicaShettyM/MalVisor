@@ -2,7 +2,9 @@ from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 import os
 
-from analysis import extract_pe_features, save_report, load_report
+from server.analysis.model import analyze_static
+from server.analysis.severity_wrapper import compute_severity
+from server.analysis.reports import save_report, load_report
 
 UPLOAD_DIR = 'server/uploads'
 
@@ -18,7 +20,7 @@ def upload_file():
     file = request.files.get('file')
     if not file:
         return jsonify({"error": "No file uploaded."}), 400
-    
+
     filename = secure_filename(file.filename)
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
@@ -37,11 +39,22 @@ def analyze_file():
     if not os.path.exists(file_path):
         return jsonify({"error": "File not found on server."}), 404
 
-    result = extract_pe_features(file_path)
+    result = analyze_static(file_path)
+    if "error" in result:
+        return jsonify(result), 400
+
+    severity_score = compute_severity(result["predicted_family"], result["raw_features"])
+    result["severity"] = severity_score
+
     report_id = save_report(result)
     os.remove(file_path)
 
-    return jsonify({"message": "Analysis complete.", "report_id": report_id})
+    return jsonify({
+        "message": "Analysis complete.",
+        "report_id": report_id,
+        "predicted_family": result["predicted_family"],
+        "severity": result["severity"]
+    })
 
 
 # 3. Report Endpoint 
