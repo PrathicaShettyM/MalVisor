@@ -1,5 +1,5 @@
-from analysis.model import calculate_severity_score
-from analysis.feature_extractor import extract_pe_features
+from .model import calculate_severity_score
+from .feature_extractor import extract_pe_features
 
 def compute_severity(predicted_family, raw_features) -> float:
     entropy_avg = (

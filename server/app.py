@@ -2,9 +2,10 @@ from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 import os
 
-from server.analysis.model import analyze_static
-from server.analysis.severity_wrapper import compute_severity
-from server.analysis.reports import save_report, load_report
+from analysis.feature_extractor import extract_pe_features
+from analysis.model import classify_and_score
+from analysis.severity_wrapper import compute_severity
+from analysis.reports import save_report, load_report
 
 UPLOAD_DIR = 'server/uploads'
 
@@ -39,12 +40,12 @@ def analyze_file():
     if not os.path.exists(file_path):
         return jsonify({"error": "File not found on server."}), 404
 
-    result = analyze_static(file_path)
-    if "error" in result:
-        return jsonify(result), 400
+    raw_features = extract_pe_features(file_path)
+    if "error" in raw_features:
+        return jsonify(raw_features), 400
 
-    severity_score = compute_severity(result["predicted_family"], result["raw_features"])
-    result["severity"] = severity_score
+    result = classify_and_score(raw_features)
+    result["raw_features"] = raw_features
 
     report_id = save_report(result)
     os.remove(file_path)
@@ -53,7 +54,7 @@ def analyze_file():
         "message": "Analysis complete.",
         "report_id": report_id,
         "predicted_family": result["predicted_family"],
-        "severity": result["severity"]
+        "severity": result["severity_score"]
     })
 
 
