@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import os
 
@@ -10,6 +11,8 @@ from analysis.reports import save_report, load_report
 UPLOAD_DIR = 'server/uploads'
 
 app = Flask(__name__)
+CORS(app)
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_DIR
 
 if not os.path.exists(UPLOAD_DIR):
