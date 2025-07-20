@@ -1,0 +1,39 @@
+{
+  "malwareFamily": "Keylogger",
+  "severityScore": 4.18,
+  "fileHashes": {
+    "md5": "fca0e9274cf35e71b267312b457d3314",
+    "sha1": "7b8194e2ec0b96435c21c391d4e5de0f326504a5",
+    "sha256": "2df0b3845c6e4e32fd3e3c1ab74be06a63b7df6a1b2c38c9f1f44c91ee0f3cb2"
+  },
+  "entropy": {
+    ".text\u0000\u0000\u0000": 6.08,
+    ".data\u0000\u0000\u0000": 1.89,
+    ".rsrc\u0000\u0000\u0000": 2.98
+  },
+  "strings": [
+    "SetWindowsHookEx",
+    "GetAsyncKeyState",
+    "LogKey",
+    "C:\\logs\\keylog.txt",
+    "WriteFile"
+  ],
+  "peFeatures": {
+    "imported_libraries": [
+      "user32.dll", "kernel32.dll"
+    ],
+    "section_names": [".text", ".data", ".rsrc"],
+    "entry_point": "0x4020",
+    "timestamp": 4032123121
+  },
+  "modelFeatures": {
+    "num_imports": 2,
+    "entropy_mean": 3.65,
+    "entropy_max": 6.08,
+    "entropy_min": 1.89,
+    "section_count": 3,
+    "filesize": 43120,
+    "string_count": 453,
+    "suspicious_string_count": 2
+  }
+}

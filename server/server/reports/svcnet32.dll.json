@@ -1,0 +1,40 @@
+{
+  "malwareFamily": "Worm",
+  "severityScore": 3.95,
+  "fileHashes": {
+    "md5": "01ffbbecfa9290e5eacb4312c6dfb3e2",
+    "sha1": "d1288e15a983e77259dc76ffdf8bc73951e4d76e",
+    "sha256": "8e8a786b1b22ea1fc1f3f8f63b45f3be3ac9b8fdfa5f162c03fceda7a5823f9a"
+  },
+  "entropy": {
+    ".text\u0000\u0000\u0000": 6.62,
+    ".rdata\u0000\u0000": 4.71,
+    ".data\u0000\u0000\u0000": 2.54,
+    ".rsrc\u0000\u0000\u0000": 3.43
+  },
+  "strings": [
+    "ConnectNamedPipe",
+    "NetShareEnum",
+    "StartServiceA",
+    "svchost.exe",
+    "CMD /c copy worm.dll"
+  ],
+  "peFeatures": {
+    "imported_libraries": [
+      "netapi32.dll", "advapi32.dll", "kernel32.dll"
+    ],
+    "section_names": [".text", ".rdata", ".data", ".rsrc"],
+    "entry_point": "0x4050",
+    "timestamp": 4199999999
+  },
+  "modelFeatures": {
+    "num_imports": 3,
+    "entropy_mean": 4.82,
+    "entropy_max": 6.62,
+    "entropy_min": 2.54,
+    "section_count": 4,
+    "filesize": 60128,
+    "string_count": 582,
+    "suspicious_string_count": 4
+  }
+}

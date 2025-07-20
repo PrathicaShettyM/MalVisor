@@ -2,9 +2,10 @@ import pefile
 import math
 import os
 import string
+import hashlib
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
 
-# 1. calculate shannon entropy 
+# ✅ Proper entropy calculation
 def calculate_entropy(data: bytes) -> float:
     if not data:
         return 0.0
@@ -15,22 +16,23 @@ def calculate_entropy(data: bytes) -> float:
             entropy -= p_x * math.log2(p_x)
     return entropy
 
-# 2. extract human-readable strings
+# ✅ Extract printable strings from binary
 def extract_strings(file_path: str, min_length: int = 4) -> list:
     result = []
     with open(file_path, "rb") as f:
         content = f.read()
         current = ""
         for byte in content:
-            if chr(byte) in string.printable:
-                current += chr(byte)
-                continue
-            if len(current) >= min_length:
-                result.append(current)
-            current = ""
+            char = chr(byte)
+            if char in string.printable:
+                current += char
+            else:
+                if len(current) >= min_length:
+                    result.append(current)
+                current = ""
     return result
 
-# 3. Light code disassembly
+# ✅ Disassemble using Capstone (optional but useful)
 def disassemble_code(data: bytes, base_addr=0x1000):
     disassembled = []
     md = Cs(CS_ARCH_X86, CS_MODE_32)
@@ -38,86 +40,106 @@ def disassemble_code(data: bytes, base_addr=0x1000):
         disassembled.append(f"{i.mnemonic} {i.op_str}")
     return disassembled
 
-# 4. Extract PE features
+# ✅ Hash calculator
+def calculate_file_hashes(file_path: str) -> dict:
+    with open(file_path, "rb") as f:
+        content = f.read()
+        return {
+            "md5": hashlib.md5(content).hexdigest(),
+            "sha1": hashlib.sha1(content).hexdigest(),
+            "sha256": hashlib.sha256(content).hexdigest()
+        }
+
+# ✅ PE extractor
 def extract_pe_features(file_path: str) -> dict:
     try:
         pe = pefile.PE(file_path)
-    except pefile.PEFormatError as e:
-        return {"error": str(e)}
+    except Exception as e:
+        return {"error": f"PE parsing failed: {str(e)}"}
 
-    features = {
-        "entry_point": hex(pe.OPTIONAL_HEADER.AddressOfEntryPoint),
-        "image_base": hex(pe.OPTIONAL_HEADER.ImageBase),
-        "sections": [],
-        "imports": [],
-        "exports": [],
-        "entropy": [],
-        "strings": extract_strings(file_path),
-    }
-
+    entropy_by_section = {}
+    section_names = []
     for section in pe.sections:
-        section_info = {
-            "name": section.Name.decode(errors="ignore").strip(),
-            "virtual_address": hex(section.VirtualAddress),
-            "size_of_raw_data": section.SizeOfRawData,
-            "entropy": calculate_entropy(section.get_data())
-        }
-        features["sections"].append(section_info)
-        features["entropy"].append(section_info["entropy"])
+        try:
+            name = section.Name.decode(errors="ignore").strip()
+            entropy = round(calculate_entropy(section.get_data()), 4)
+            section_names.append(name)
+            entropy_by_section[name] = entropy
+        except Exception:
+            continue
 
+    imported_libraries = []
     if hasattr(pe, 'DIRECTORY_ENTRY_IMPORT'):
         for entry in pe.DIRECTORY_ENTRY_IMPORT:
-            features["imports"].append({
-                "dll": entry.dll.decode(),
-                "functions": [imp.name.decode() if imp.name else "ordinal" for imp in entry.imports]
-            })
+            if entry.dll:
+                try:
+                    imported_libraries.append(entry.dll.decode(errors="ignore"))
+                except Exception:
+                    continue
 
-    if hasattr(pe, 'DIRECTORY_ENTRY_EXPORT'):
-        for symbol in pe.DIRECTORY_ENTRY_EXPORT.symbols:
-            features["exports"].append(symbol.name.decode() if symbol.name else "ordinal")
+    try:
+        timestamp = pe.FILE_HEADER.TimeDateStamp
+    except Exception:
+        timestamp = "N/A"
 
     try:
         code_section = pe.sections[0]
         code = code_section.get_data()[:200]
-        features["disassembly"] = disassemble_code(code)
+        disassembly = disassemble_code(code)
     except Exception as e:
-        features["disassembly"] = f"Failed: {str(e)}"
+        disassembly = [f"Disassembly failed: {str(e)}"]
 
-    return features
+    return {
+        "file_hashes": calculate_file_hashes(file_path),
+        "entropy": entropy_by_section,
+        "strings": extract_strings(file_path),
+        "pe_features": {
+            "imports": imported_libraries,
+            "sections": section_names,
+            "entry_point": hex(pe.OPTIONAL_HEADER.AddressOfEntryPoint),
+            "timestamp": timestamp,
+            "disassembly": disassembly
+        }
+    }
 
-# 5. Convert raw features into ML model features with severity scoring
-def convert_to_model_features(raw_features: dict) -> dict:
+# ✅ Model feature preparation (Fixed logic)
+def convert_to_model_features(raw_features: dict, file_path: str) -> dict:
     if "error" in raw_features:
         return {}
 
-    num_imports = sum(len(dll["functions"]) for dll in raw_features.get("imports", []))
-    entropy_values = raw_features.get("entropy", [])
+    pe_data = raw_features.get("pe_features", {})
+    entropy_values = list(raw_features.get("entropy", {}).values())
     strings = raw_features.get("strings", [])
-    section_count = len(raw_features.get("sections", []))
-    filesize = sum(sec.get("size_of_raw_data", 0) for sec in raw_features.get("sections", []))
+
+    # ✅ Filter out non-suspicious common strings
+    benign_substrings = [
+        "This program cannot be run in DOS mode",
+        "Rich", ".text", ".data", ".rdata", ".rsrc", ".reloc"
+    ]
 
     suspicious_apis = ["CreateRemoteThread", "VirtualAlloc", "LoadLibrary"]
-    suspicious_string_count = sum(
-        any(api in s for api in suspicious_apis)
-        for s in strings
-    )
+    suspicious_string_count = 0
 
-    # Severity scoring heuristic
-    family_weight = 2.0  # Placeholder: could be mapped from external model/dataset
-    entropy_score = max(entropy_values) if entropy_values else 0
-    obfuscation_weight = entropy_score / 8  # Normalized to [0, 1]
-    api_suspicion_weight = suspicious_string_count / 10  # Arbitrary scale
+    for s in strings:
+        if any(api in s for api in suspicious_apis) and not any(b in s for b in benign_substrings):
+            suspicious_string_count += 1
 
-    severity_score = min(10.0, family_weight + obfuscation_weight + api_suspicion_weight)
+    num_imports = len(pe_data.get("imports", []))
+    section_count = len(pe_data.get("sections", []))
+
+    # ✅ Use actual file size (corrected)
+    try:
+        filesize = os.path.getsize(file_path)
+    except:
+        filesize = 0
 
     return {
         "num_imports": num_imports,
-        "entropy_mean": sum(entropy_values)/len(entropy_values) if entropy_values else 0,
-        "entropy_max": entropy_score,
+        "entropy_mean": sum(entropy_values) / len(entropy_values) if entropy_values else 0,
+        "entropy_max": max(entropy_values) if entropy_values else 0,
         "entropy_min": min(entropy_values) if entropy_values else 0,
         "section_count": section_count,
         "filesize": filesize,
         "string_count": len(strings),
-        "suspicious_string_count": suspicious_string_count,
-        "severity_score": round(severity_score, 2),
+        "suspicious_string_count": suspicious_string_count
     }

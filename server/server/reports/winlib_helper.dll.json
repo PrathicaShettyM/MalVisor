@@ -1,0 +1,41 @@
+{
+  "malwareFamily": "Trojan",
+  "severityScore": 3.93,
+  "fileHashes": {
+    "md5": "7c3b7e4ff42b1f36e8d2b83b9d97c3f2",
+    "sha1": "0d98fcfae72b6f5ab9a194c3f1e86723ed68de91",
+    "sha256": "5ad3f21fa24f8acb02a8cb189621f2f6fd32f2b6ff8a7ae7cb349c6ef3b1cbea"
+  },
+  "entropy": {
+    ".text\u0000\u0000\u0000": 6.45,
+    ".rdata\u0000\u0000": 4.38,
+    ".data\u0000\u0000\u0000": 2.01,
+    ".rsrc\u0000\u0000\u0000": 3.92
+  },
+  "strings": [
+    "This program cannot be run in DOS mode.",
+    "WinExec",
+    "CreateProcessA",
+    "GetProcAddress",
+    "kernel32.dll",
+    "user32.dll"
+  ],
+  "peFeatures": {
+    "imported_libraries": [
+      "kernel32.dll", "user32.dll", "advapi32.dll"
+    ],
+    "section_names": [".text", ".rdata", ".data", ".rsrc"],
+    "entry_point": "0x4350",
+    "timestamp": 4123456789
+  },
+  "modelFeatures": {
+    "num_imports": 3,
+    "entropy_mean": 4.69,
+    "entropy_max": 6.45,
+    "entropy_min": 2.01,
+    "section_count": 4,
+    "filesize": 56284,
+    "string_count": 734,
+    "suspicious_string_count": 3
+  }
+}

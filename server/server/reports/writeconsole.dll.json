@@ -1,0 +1,38 @@
+{
+  "malwareFamily": "Adware",
+  "severityScore": 2.73,
+  "fileHashes": {
+    "md5": "62af648c2b5d6429bc6f24d263d1a1e7",
+    "sha1": "447a92b0cd9adacc21d6f23bb9b14be6f28cb25a",
+    "sha256": "bfd8d10e3f0de9a8bc02d742d0a8e3e88dcbf610f7993ed26d9f6c3d7639fc34"
+  },
+  "entropy": {
+    ".text\u0000\u0000\u0000": 5.49,
+    ".rdata\u0000\u0000": 3.86,
+    ".data\u0000\u0000\u0000": 1.94
+  },
+  "strings": [
+    "PopupAd.exe",
+    "http://ads.example.com",
+    "ShellExecuteA",
+    "URLDownloadToFileA"
+  ],
+  "peFeatures": {
+    "imported_libraries": [
+      "urlmon.dll", "shell32.dll"
+    ],
+    "section_names": [".text", ".rdata", ".data"],
+    "entry_point": "0x4030",
+    "timestamp": 4000000001
+  },
+  "modelFeatures": {
+    "num_imports": 2,
+    "entropy_mean": 3.76,
+    "entropy_max": 5.49,
+    "entropy_min": 1.94,
+    "section_count": 3,
+    "filesize": 37652,
+    "string_count": 429,
+    "suspicious_string_count": 1
+  }
+}

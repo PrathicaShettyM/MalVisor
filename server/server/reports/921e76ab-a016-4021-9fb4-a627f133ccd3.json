@@ -1,0 +1,54 @@
+{
+  "malwareFamily": "benign",
+  "severityScore": 0.81,
+  "fileHashes": {
+    "md5": "5eace36402143b0205635818363d8e57",
+    "sha1": "ae7b03251a0bac083dec3b1802b5ca9c10132b4c",
+    "sha256": "25a39e721c26e53bec292395d093211bba70465280acfa2059fa52957ec975b2"
+  },
+  "entropy": {
+    ".rdata\u0000\u0000": 5.5149,
+    ".rsrc\u0000\u0000\u0000": 4.8319
+  },
+  "strings": [
+    "!This program cannot be run in DOS mode.\r\r\n$",
+    "Rich",
+    ".rdata",
+    "@.rsrc",
+    "python3.dll",
+    "PyAIter_Check",
+    "python312.PyAIter_Check",
+    "PyArg_Parse",
+    "python312.PyArg_Parse",
+    "PyArg_ParseTuple",
+    "python312.PyArg_ParseTuple",
+    "PyArg_ParseTupleAndKeywords",
+    "python312.PyArg_ParseTupleAndKeywords",
+    "PyArg_UnpackTuple",
+    "python312.PyArg_UnpackTuple",
+    "PyArg_VaParse",
+    "python312.PyArg_VaParse",
+    "PyArg_VaParseTupleAndKeywords",
+    "python312.PyArg_VaParseTupleAndKeywords",
+    "PyArg_ValidateKeywordArguments"
+  ],
+  "peFeatures": {
+    "imported_libraries": [],
+    "section_names": [
+      ".rdata\u0000\u0000",
+      ".rsrc\u0000\u0000\u0000"
+    ],
+    "entry_point": "0x0",
+    "timestamp": 1725653569
+  },
+  "modelFeatures": {
+    "num_imports": 0,
+    "entropy_mean": 5.1734,
+    "entropy_max": 5.5149,
+    "entropy_min": 4.8319,
+    "section_count": 2,
+    "filesize": 68376,
+    "string_count": 1959,
+    "suspicious_string_count": 0
+  }
+}

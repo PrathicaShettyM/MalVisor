@@ -1,0 +1,39 @@
+{
+  "malwareFamily": "Spyware",
+  "severityScore": 4.81,
+  "fileHashes": {
+    "md5": "b4735ab19d5f053126e9e93f2cebb7c1",
+    "sha1": "eaa4c0aa53d222cb66ea28761c99f86c6228b09d",
+    "sha256": "ac0c926ecdd5a132eb7286d61c58e2b6e157e4fc1dcf504f655384f101ecb9a3"
+  },
+  "entropy": {
+    ".text\u0000\u0000\u0000": 5.84,
+    ".data\u0000\u0000\u0000": 2.36,
+    ".rsrc\u0000\u0000\u0000": 2.91
+  },
+  "strings": [
+    "GetClipboardData",
+    "OpenClipboard",
+    "SetClipboardViewer",
+    "SaveLog",
+    "InternetOpenUrlA"
+  ],
+  "peFeatures": {
+    "imported_libraries": [
+      "wininet.dll", "user32.dll"
+    ],
+    "section_names": [".text", ".data", ".rsrc"],
+    "entry_point": "0x4100",
+    "timestamp": 4211020222
+  },
+  "modelFeatures": {
+    "num_imports": 2,
+    "entropy_mean": 3.70,
+    "entropy_max": 5.84,
+    "entropy_min": 2.36,
+    "section_count": 3,
+    "filesize": 40712,
+    "string_count": 510,
+    "suspicious_string_count": 2
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "malwareFamily": "benign",
+  "severityScore": 1.13,
+  "fileHashes": {
+    "md5": "b14fdbd89ccc656d238e0189fd5897d7",
+    "sha1": "2eb3e99f759831c1f0a01aa225bb6852af3734f5",
+    "sha256": "bfecae7ceb2d738888a1c0fbc73e8fbd6e01a44d4f58646dafcd6ebd11819b45"
+  },
+  "entropy": {
+    ".text\u0000\u0000\u0000": 5.4903,
+    ".data\u0000\u0000\u0000": 0.0815,
+    ".rdata\u0000\u0000": 4.9646,
+    "/4\u0000\u0000\u0000\u0000\u0000\u0000": 3.7818,
+    ".bss\u0000\u0000\u0000\u0000": 0.0,
+    ".edata\u0000\u0000": 0.5408,
+    ".idata\u0000\u0000": 3.6334,
+    ".CRT\u0000\u0000\u0000\u0000": 0.1513,
+    ".tls\u0000\u0000\u0000\u0000": 0.2905,
+    ".reloc\u0000\u0000": 3.8786,
+    "/14\u0000\u0000\u0000\u0000\u0000": 0.0612,
+    "/29\u0000\u0000\u0000\u0000\u0000": 5.6731,
+    "/41\u0000\u0000\u0000\u0000\u0000": 2.8735,
+    "/55\u0000\u0000\u0000\u0000\u0000": 3.5311
+  },
+  "strings": [
+    "!This program cannot be run in DOS mode.\r\r\n$",
+    ".text",
+    "P`.data",
+    ".rdata",
+    "0@/4",
+    "0@.bss",
+    ".edata",
+    "0@.idata",
+    ".CRT",
+    ".tls",
+    ".reloc",
+    "0B/14",
+    "B/29",
+    "B/41",
+    "B/55",
+    "D$$t\n",
+    "L[^_]",
+    "L[^_]",
+    " [^_",
+    "libgcc_s_dw2-1.dll"
+  ],
+  "peFeatures": {
+    "imported_libraries": [
+      "KERNEL32.dll",
+      "msvcrt.dll",
+      "USER32.dll"
+    ],
+    "section_names": [
+      ".text\u0000\u0000\u0000",
+      ".data\u0000\u0000\u0000",
+      ".rdata\u0000\u0000",
+      "/4\u0000\u0000\u0000\u0000\u0000\u0000",
+      ".bss\u0000\u0000\u0000\u0000",
+      ".edata\u0000\u0000",
+      ".idata\u0000\u0000",
+      ".CRT\u0000\u0000\u0000\u0000",
+      ".tls\u0000\u0000\u0000\u0000",
+      ".reloc\u0000\u0000",
+      "/14\u0000\u0000\u0000\u0000\u0000",
+      "/29\u0000\u0000\u0000\u0000\u0000",
+      "/41\u0000\u0000\u0000\u0000\u0000",
+      "/55\u0000\u0000\u0000\u0000\u0000"
+    ],
+    "entry_point": "0x1060",
+    "timestamp": 1751606206
+  },
+  "modelFeatures": {
+    "num_imports": 3,
+    "entropy_mean": 2.49655,
+    "entropy_max": 5.6731,
+    "entropy_min": 0.0,
+    "section_count": 14,
+    "filesize": 27002,
+    "string_count": 656,
+    "suspicious_string_count": 3
+  }
+}
